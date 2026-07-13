@@ -65,3 +65,81 @@ async def get_post(post_id: str):
 
     return post
 
+@router.put("/{post_id}")
+async def update_post(
+    post_id: str,
+    post: PostCreate,
+    current_user=Depends(get_current_user)
+):
+    existing_post = await posts.find_one(
+        {
+            "_id": ObjectId(post_id)
+        }
+    )
+    if not existing_post:
+        raise HTTPException(
+            status_code=404,
+            detail="Post not found"
+        )
+
+    if existing_post["author_id"] != current_user["_id"]:
+        raise HTTPException(
+            status_code=403,
+            detail="Not allowed"
+        )
+
+    await posts.update_one(
+
+        {
+            "_id": ObjectId(post_id)
+        },
+
+        {
+            "$set":
+                {
+                    "title": post.title,
+                    "content": post.content,
+                    "category_id": ObjectId(post.category_id),
+                    "tags": post.tags
+                }
+        }
+
+    )
+
+    return {
+        "message": "Post updated"
+    }
+
+
+
+@router.delete("/{post_id}")
+async def delete_post(
+    post_id:str,
+    current_user=Depends(get_current_user)
+):
+    post = await posts.find_one(
+        {
+            "_id": ObjectId(post_id)
+        }
+    )
+    if not post:
+        raise HTTPException(
+            status_code=404,
+            detail="Post not found"
+        )
+
+    if post["author_id"] != current_user["_id"]:
+        raise HTTPException(
+            status_code=403,
+            detail="Not allowed"
+        )
+
+    await posts.delete_one(
+        {
+            "_id": ObjectId(post_id)
+        }
+    )
+
+    return {
+        "message": "Post deleted"
+    }

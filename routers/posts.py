@@ -59,6 +59,47 @@ async def get_posts(
         "posts": result
     }
 
+@router.get("/search")
+async def search_posts(
+        q:str
+):
+    results = await posts.find(
+        {
+            "$or": [
+
+                {
+                    "title": {
+                        "$regex": q,
+                        "$options": "i"
+                    }
+                },
+
+                {
+                    "content": {
+                        "$regex": q,
+                        "$options": "i"
+                    }
+
+                },
+
+                {
+                    "tags": {
+                        "$regex": q,
+                        "$options": "i"
+                    }
+                }
+
+            ]
+        }
+    ).to_list(None)
+
+    for post in results:
+        post["_id"] = str(post["_id"])
+        post["author_id"] = str(post["author_id"])
+        post["category_id"] = str(post["category_id"])
+
+    return results
+
 @router.get("/{post_id}")
 async def get_post(post_id: str):
     post = await posts.find_one(

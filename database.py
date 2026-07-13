@@ -18,3 +18,4 @@ posts = db["posts"]
 comments = db["comments"]
 
 categories = db["categories"]
+

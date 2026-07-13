@@ -14,3 +14,7 @@ class PostCreate(BaseModel):
     category_id: str
 
     tags: list[str]
+
+class CommentCreate(BaseModel):
+    content : str
+

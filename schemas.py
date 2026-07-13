@@ -18,3 +18,5 @@ class PostCreate(BaseModel):
 class CommentCreate(BaseModel):
     content : str
 
+class TagCreate(BaseModel):
+    name:str

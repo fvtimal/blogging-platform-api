@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from bson import ObjectId
 
@@ -33,18 +33,31 @@ async def create_post(
         "message": "Post created successfully",
         "id": str(result.inserted_id)
     }
-
 @router.get("/")
-async def get_posts():
+async def get_posts(
+        page:int = Query(1, ge=1),
+        limit:int = Query(10, ge=1, le=100)
+):
 
-    all_posts = await posts.find().to_list(None)
+    skip = (page - 1) * limit
 
-    for post in all_posts:
+    result = await posts.find() \
+        .skip(skip) \
+        .limit(limit) \
+        .to_list(None)
+
+
+    for post in result:
         post["_id"] = str(post["_id"])
         post["author_id"] = str(post["author_id"])
         post["category_id"] = str(post["category_id"])
 
-    return all_posts
+
+    return {
+        "page": page,
+        "limit": limit,
+        "posts": result
+    }
 
 @router.get("/{post_id}")
 async def get_post(post_id: str):

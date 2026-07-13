@@ -1,4 +1,13 @@
-.idea/
-.env
+.venv/
+
 __pycache__/
-routers/__pycache__/
+
+.env
+
+.pytest_cache/
+
+.idea/
+
+.vscode/
+
+mkdir blog_api/

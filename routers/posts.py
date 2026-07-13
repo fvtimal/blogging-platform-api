@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from bson import ObjectId
 
-from database import posts
+from database import posts,comments
 
 from dependencies import get_current_user
 
@@ -133,6 +133,14 @@ async def delete_post(
             status_code=403,
             detail="Not allowed"
         )
+
+    # delete comments first
+
+    await comments.delete_many(
+        {
+            "post_id": ObjectId(post_id)
+        }
+    )
 
     await posts.delete_one(
         {

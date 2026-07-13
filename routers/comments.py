@@ -90,3 +90,7 @@ async def delete_comment(
             "_id": ObjectId(comment_id)
         }
     )
+
+    return {
+        "message":"comment deleted"
+    }

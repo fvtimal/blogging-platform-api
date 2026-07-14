@@ -25,3 +25,10 @@ class MessageResonse(BaseModel):
     message: str
     id: str
 
+class PostResponse(BaseModel):
+    id: str
+    title: str
+    content: str
+    categor_id: str
+    tags: list[str]
+    author_id: str

@@ -6,7 +6,7 @@ from database import posts, comments, tags
 
 from dependencies import get_current_user
 
-from schemas import PostCreate, MessageResonse
+from schemas import PostCreate, MessageResonse, PostResponse
 
 
 router = APIRouter(
@@ -163,7 +163,7 @@ async def search_posts(
 
 # ---------------- GET SINGLE POST ----------------
 
-@router.get("/{post_id}")
+@router.get("/{post_id}", response_model=PostResponse)
 async def get_post(post_id:str):
 
     post = await posts.find_one(

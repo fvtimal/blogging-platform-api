@@ -191,7 +191,7 @@ async def get_post(post_id:str):
         )
 
 
-    post["_id"] = str(post["_id"])
+    post["id"] = str(post["_id"])
 
     post["author_id"] = str(post["author_id"])
 

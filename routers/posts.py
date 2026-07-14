@@ -6,7 +6,7 @@ from database import posts, comments, tags
 
 from dependencies import get_current_user
 
-from schemas import PostCreate
+from schemas import PostCreate, MessageResonse
 
 
 router = APIRouter(
@@ -17,7 +17,7 @@ router = APIRouter(
 
 # ---------------- CREATE POST ----------------
 
-@router.post("/")
+@router.post("/",response_model = MessageResonse)
 async def create_post(
     post: PostCreate,
     current_user=Depends(get_current_user)

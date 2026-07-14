@@ -20,3 +20,8 @@ class CommentCreate(BaseModel):
 
 class TagCreate(BaseModel):
     name:str
+
+class MessageResonse(BaseModel):
+    message: str
+    id: str
+

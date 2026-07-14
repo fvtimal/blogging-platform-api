@@ -13,19 +13,10 @@ client = AsyncIOMotorClient(MONGO_URL)
 db = client[DATABASE_NAME]
 
 users = db["users"]
-users.create_index(
-    "email",
-    unique = True
-)
+
 
 posts = db["posts"]
 
-posts.create_index(
-    [
-        ("title",TEXT),
-        ("content",TEXT)
-    ]
-)
 
 comments = db["comments"]
 

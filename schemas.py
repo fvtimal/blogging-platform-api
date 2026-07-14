@@ -29,6 +29,6 @@ class PostResponse(BaseModel):
     id: str
     title: str
     content: str
-    categor_id: str
+    category_id: str
     tags: list[str]
     author_id: str

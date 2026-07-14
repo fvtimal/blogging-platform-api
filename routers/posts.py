@@ -8,6 +8,8 @@ from dependencies import get_current_user
 
 from schemas import PostCreate, MessageResonse, PostResponse
 
+from utils import is_valid_object_id
+
 
 router = APIRouter(
     prefix="/posts",
@@ -166,11 +168,19 @@ async def search_posts(
 @router.get("/{post_id}", response_model=PostResponse)
 async def get_post(post_id:str):
 
+    if not is_valid_object_id(post_id):
+        raise HTTPException(
+            status_code= 400,
+            detail="Invalid post id"
+        )
+
     post = await posts.find_one(
         {
             "_id":ObjectId(post_id)
         }
     )
+
+
 
 
     if not post:
@@ -206,6 +216,11 @@ async def update_post(
     post:PostCreate,
     current_user=Depends(get_current_user)
 ):
+    if not is_valid_object_id(post_id):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid post id"
+        )
 
     existing_post = await posts.find_one(
         {
@@ -291,6 +306,11 @@ async def delete_post(
     post_id:str,
     current_user=Depends(get_current_user)
 ):
+    if not is_valid_object_id(post_id):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid post id"
+        )
 
     post = await posts.find_one(
         {

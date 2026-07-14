@@ -1,4 +1,5 @@
 from passlib.context import CryptContext
+from bson import ObjectId
 
 pwd_context = CryptContext(
     schemes=["bcrypt"],
@@ -17,3 +18,6 @@ def verify_password(
         plain_password,
         hashed_password
     )
+
+def is_valid_object_id(id:str):
+    return ObjectId.is_valid(id)

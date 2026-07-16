@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
 
 from routers import (
@@ -12,6 +14,10 @@ from routers import (
 app = FastAPI(
     title="Blog API"
 )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(req, exc):
+    return JSONResponse(status_code=422, content={"detail": exc.errors()})
 
 app.include_router(users.router)
 

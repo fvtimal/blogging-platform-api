@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends,Query, HTTPException
 from bson import ObjectId
 from database import comments, posts
 from schemas import CommentCreate
@@ -58,27 +58,34 @@ async def add_comment(
 
 
 @router.get("/{post_id}/comments")
-async def get_comments(post_id:str):
-
+async def get_comments(
+    post_id: str,
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100)
+):
     if not is_valid_object_id(post_id):
         raise HTTPException(
             status_code=400,
             detail="Invalid post id"
         )
 
+    skip = (page - 1) * limit
+
     result = await comments.find(
-        {
-            "post_id": ObjectId(post_id)
-        }
-    ).to_list(None)
+        {"post_id": ObjectId(post_id)}
+    ).skip(skip).limit(limit).to_list(None)
+
     for comment in result:
         comment["_id"] = str(comment["_id"])
-
         comment["post_id"] = str(comment["post_id"])
-
         comment["author_id"] = str(comment["author_id"])
 
-    return result
+    return {
+        "page": page,
+        "limit": limit,
+        "comments": result
+    }
+
 
 @router.delete("/comments/{comment_id}")
 async def delete_comment(

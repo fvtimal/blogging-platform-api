@@ -74,10 +74,14 @@ async def get_posts(
 
 
 # ---------------- SEARCH POSTS ----------------
-
 @router.get("/search")
-async def search_posts(q: str):
+async def search_posts(
+    q: str,
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100)
+):
     safe_q = re.escape(q)
+    skip = (page - 1) * limit
 
     results = await posts.find(
         {
@@ -86,14 +90,18 @@ async def search_posts(q: str):
                 {"content": {"$regex": safe_q, "$options": "i"}}
             ]
         }
-    ).to_list(None)
+    ).skip(skip).limit(limit).to_list(None)
 
     results = [
         serialize_doc(post, id_fields=["author_id", "category_id", "tags"])
         for post in results
     ]
 
-    return results
+    return {
+        "page": page,
+        "limit": limit,
+        "posts": results
+    }
 
 
 # ---------------- GET SINGLE POST ----------------

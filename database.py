@@ -23,3 +23,4 @@ comments = db["comments"]
 categories = db["categories"]
 
 tags = db["tags"]
+

@@ -10,6 +10,8 @@ from schemas import PostCreate, MessageResponse, PostResponse
 
 from utils import is_valid_object_id, serialize_doc
 
+import re
+
 
 router = APIRouter(
     prefix="/posts",
@@ -78,12 +80,13 @@ async def get_posts(
 
 @router.get("/search")
 async def search_posts(q: str):
+    safe_q = re.escape(q)
 
     results = await posts.find(
         {
             "$or": [
-                {"title": {"$regex": q, "$options": "i"}},
-                {"content": {"$regex": q, "$options": "i"}}
+                {"title": {"$regex": safe_q, "$options": "i"}},
+                {"content": {"$regex": safe_q, "$options": "i"}}
             ]
         }
     ).to_list(None)

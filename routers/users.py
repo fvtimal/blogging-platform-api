@@ -7,13 +7,10 @@ from fastapi import Depends
 from utils import verify_password
 from auth import create_access_token
 
-
-
 router = APIRouter(
     prefix="/users",
     tags=["Users"]
 )
-
 
 @router.get("/")
 async def test():

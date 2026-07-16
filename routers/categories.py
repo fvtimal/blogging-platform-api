@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter,   Depends, HTTPException
 
 from database import categories
 
 from pydantic import BaseModel
+from dependencies import get_current_user
 
 
 router = APIRouter(
@@ -15,7 +16,7 @@ class CategoryCreate(BaseModel):
     name: str
 
 @router.post("/")
-async def create_category(category: CategoryCreate):
+async def create_category(category: CategoryCreate, current_user=Depends(get_current_user)):
 
     existing = await categories.find_one(
         {

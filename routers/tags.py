@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from database import tags
 
 from schemas import TagCreate
+from dependencies import get_current_user
 
 router = APIRouter(
 
@@ -13,7 +14,7 @@ router = APIRouter(
 )
 
 @router.post("/")
-async def create_tag(tag:TagCreate):
+async def create_tag(tag:TagCreate, current_user = Depends(get_current_user)):
 
 
     existing = await tags.find_one(

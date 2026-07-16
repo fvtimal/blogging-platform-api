@@ -6,7 +6,7 @@ from database import posts, comments, tags
 
 from dependencies import get_current_user
 
-from schemas import PostCreate, MessageResonse, PostResponse
+from schemas import PostCreate, MessageResponse, PostResponse
 
 from utils import is_valid_object_id, serialize_doc
 
@@ -19,7 +19,7 @@ router = APIRouter(
 
 # ---------------- CREATE POST ----------------
 
-@router.post("/", response_model=MessageResonse)
+@router.post("/", response_model=MessageResponse)
 async def create_post(
     post: PostCreate,
     current_user=Depends(get_current_user)

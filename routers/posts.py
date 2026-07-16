@@ -28,13 +28,10 @@ async def create_post(
 ):
 
     # Check tags exist
-    for tag in post.tags:
-        existing_tag = await tags.find_one({"_id": ObjectId(tag)})
-        if not existing_tag:
-            raise HTTPException(
-                status_code=404,
-                detail=f"Tag {tag} not found"
-            )
+    tag_ids = [ObjectId(t) for t in post.tags]
+    found = await tags.find({"_id": {"$in": tag_ids}}).to_list(None)
+    if len(found) != len(tag_ids):
+        raise HTTPException(status_code=404, detail="One or more tags not found")
 
     new_post = {
         "title": post.title,
@@ -152,13 +149,10 @@ async def update_post(
         )
 
     # validate tags
-    for tag in post.tags:
-        existing_tag = await tags.find_one({"_id": ObjectId(tag)})
-        if not existing_tag:
-            raise HTTPException(
-                status_code=404,
-                detail=f"Tag {tag} not found"
-            )
+    tag_ids = [ObjectId(t) for t in post.tags]
+    found = await tags.find({"_id": {"$in": tag_ids}}).to_list(None)
+    if len(found) != len(tag_ids):
+        raise HTTPException(status_code=404, detail="One or more tags not found")
 
     await posts.update_one(
         {"_id": ObjectId(post_id)},

@@ -7,6 +7,8 @@ from fastapi import Depends
 from utils import verify_password
 from auth import create_access_token
 
+
+
 router = APIRouter(
     prefix="/users",
     tags=["Users"]
@@ -46,12 +48,7 @@ async def register(user: UserRegister):
         "message": "User registered successfully",
         "id": str(result.inserted_id)
     }
-
-@router.post("/login")
-async def login(
-    form_data: OAuth2PasswordRequestForm = Depends()
-):
-
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     user = await users.find_one(
         {
             "email": form_data.username
